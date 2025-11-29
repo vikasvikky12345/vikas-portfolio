@@ -3,10 +3,25 @@ import { useGSAP } from '@gsap/react';
 import React, { useRef } from 'react';
 import { Tooltip } from 'react-tooltip';
 import gsap from 'gsap';
-
+import useStore from '#store/window';
 const Doc = () => {
+    const { openWindow, closeWindow, windows } = useStore();
     const dockRef = useRef(null);
-    const toggleApp = (app) => { };
+    const toggleApp = (app) => {
+        if (!app.canOpen) return;
+
+        const win = windows[app.id];
+        if (!win) {
+            console.error(`Window not found for app: ${app.id}`);
+            return;
+        }
+
+        if (win.isOpen) {
+            closeWindow(app.id);
+        } else {
+            openWindow(app.id);
+        }
+    };
 
     useGSAP(() => {
         const dock = dockRef.current;
